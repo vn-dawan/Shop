@@ -11,9 +11,9 @@ namespace Shop.DataAccess.InMemory
     public class ProductRepository
     {
         ObjectCache cache = MemoryCache.Default;
-        List<Product> products = new List<Product>();
+        List<Product> products;
 
-        public ProductRepository(ObjectCache cache)
+        public ProductRepository()
         {
             products = cache["products"] as List<Product>;
             if(products == null)
