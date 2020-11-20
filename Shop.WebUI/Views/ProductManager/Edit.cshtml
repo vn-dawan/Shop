@@ -7,7 +7,7 @@
 <h2>Edit</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "ProductManager", FormMethod.Post, new { encType = "multipart/for-data" }))
 {
     @Html.AntiForgeryToken()
     
@@ -16,6 +16,12 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Product.Id)
+        <div class="col-md-2">
+            <img src="~/Content/ProdImage/@Model.Product.Image" class="img-responsive"/>
+        </div>
+
+        <div class="col-md-10">
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Product.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -52,8 +58,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Product.Image, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Product.Image, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Product.Image, "", new { @class = "text-danger" })
+                <input type="file" id="file" name="file" class="form-control" />
             </div>
         </div>
 
@@ -63,6 +68,7 @@
             </div>
         </div>
     </div>
+</div>
 }
 
 <div>

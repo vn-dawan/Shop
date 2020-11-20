@@ -1,5 +1,6 @@
 ﻿using Shop.Core.Models;
 using Shop.DataAccess.InMemory;
+using Shop.DataAccess.SQL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,11 @@ namespace Shop.WebUI.Controllers
 {
     public class ProductCategoryController : Controller
     {
-        InMemoryRepository<ProductCategory> context;
+        SQLRepository<ProductCategory> context;
 
         public ProductCategoryController()
         {
-            context = new InMemoryRepository<ProductCategory>();
+            context = new SQLRepository<ProductCategory>(new MyContext());
         }
 
 
@@ -86,6 +87,8 @@ namespace Shop.WebUI.Controllers
                     else
                     {
                         //context.Update(pToEdit);
+                        //context.Update(pCategoryToEdit);
+                        //context.Commit();
                         pCategoryToEdit.Category = p.Category;
                         context.Commit();
                         return RedirectToAction("Index");
