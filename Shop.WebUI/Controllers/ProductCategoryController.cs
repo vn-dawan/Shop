@@ -79,23 +79,16 @@ namespace Shop.WebUI.Controllers
                 }
                 else
                 {
-                    if (ModelState.IsValid)
+                    if (!ModelState.IsValid)
                     {
-                        return HttpNotFound();
+                        return View(pCategoryToEdit);
                     }
                     else
                     {
-                        if (!ModelState.IsValid)
-                        {
-                            return View(pCategoryToEdit);
-                        }
-                        else
-                        {
-                            //context.Update(pToEdit);
-                            pCategoryToEdit.Category = p.Category;
-                            context.Commit();
-                            return RedirectToAction("Index");
-                        }
+                        //context.Update(pToEdit);
+                        pCategoryToEdit.Category = p.Category;
+                        context.Commit();
+                        return RedirectToAction("Index");
                     }
                 }
             }
