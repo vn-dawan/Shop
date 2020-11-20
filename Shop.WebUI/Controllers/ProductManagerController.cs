@@ -1,4 +1,5 @@
 ﻿using Shop.Core.Models;
+using Shop.Core.ViewModels;
 using Shop.DataAccess.InMemory;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace Shop.WebUI.Controllers
     public class ProductManagerController : Controller
     {
         ProductRepository context;
+        ProductCategoryRepository contextCategory;
 
         public ProductManagerController()
         {
             context = new ProductRepository();
+            contextCategory = new ProductCategoryRepository();
         }
 
 
@@ -27,21 +30,24 @@ namespace Shop.WebUI.Controllers
 
         public ActionResult Create()
         {
-            Product p = new Product();
-            return View(p);
+            ProductCategoryViewModel viewModel = new ProductCategoryViewModel();
+            viewModel.Product = new Product();
+            viewModel.ProductCategories = contextCategory.Collection();
+            //Product p = new Product();
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Product p)
+        public ActionResult Create(Product product)
         {
             if(!ModelState.IsValid)
             {
-                return View(p);
+                return View(product);
             }
             else
             {
-                context.Insert(p);
+                context.Insert(product);
                 context.Commit();
                 return RedirectToAction("Index");
             }
@@ -58,10 +64,13 @@ namespace Shop.WebUI.Controllers
                 }
                 else
                 {
-                    return View(p);
+                    ProductCategoryViewModel viewModel = new ProductCategoryViewModel();
+                    viewModel.Product = p;
+                    viewModel.ProductCategories = contextCategory.Collection();
+                    return View(viewModel);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return HttpNotFound();
             }
@@ -69,7 +78,7 @@ namespace Shop.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Product p, int id)
+        public ActionResult Edit(Product product, int id)
         {
             Product pToEdit = context.FindById(id);
             try
@@ -80,29 +89,23 @@ namespace Shop.WebUI.Controllers
                 }
                 else
                 {
-                    if(ModelState.IsValid)
+                    if(!ModelState.IsValid)
                     {
-                        return HttpNotFound();
+                        return View(pToEdit);
                     }
                     else
                     {
-                        if(!ModelState.IsValid)
-                        {
-                            return View(pToEdit);
-                        }
-                        else
-                        {
-                            //context.Update(pToEdit);
-                            pToEdit.Name = p.Name;
-                            pToEdit.Description = p.Description;
-                            pToEdit.Category = p.Category;
-                            pToEdit.Price = p.Price;
-                            pToEdit.Image = p.Image;
-                            context.Commit();
-                            return RedirectToAction("Index");
-                        }
+                        //context.Update(pToEdit);
+                        pToEdit.Name = product.Name;
+                        pToEdit.Description = product.Description;
+                        pToEdit.Category = product.Category;
+                        pToEdit.Price = product.Price;
+                        pToEdit.Image = product.Image;
+                        context.Commit();
+                        return RedirectToAction("Index");
                     }
                 }
+                
             }
             catch (Exception)
             {
@@ -124,7 +127,7 @@ namespace Shop.WebUI.Controllers
                     return View(p);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return HttpNotFound();
             }
